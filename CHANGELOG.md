@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.8.2 (2025-11-24)
+
+Full Changelog: [v2.8.1...v2.8.2](https://github.com/openai/openai-python/compare/v2.8.1...v2.8.2)
+
+### Chores
+
+* **internal:** codegen related update ([307a066](https://github.com/openai/openai-python/commit/307a0664383b9d1d4151bc1a05a78c4fdcdcc9b0))
+
 ## 2.8.1 (2025-11-17)
 
 Full Changelog: [v2.8.0...v2.8.1](https://github.com/openai/openai-python/compare/v2.8.0...v2.8.1)
