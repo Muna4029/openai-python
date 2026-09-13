@@ -17,3 +17,8 @@ Brewfile.lock.json
 .DS_Store
 
 examples/*.mp3
+# Shell redirection artifacts
+=[0-9]*
+>[0-9]*
+*.tmp
+*.log
