@@ -2919,7 +2919,23 @@ def _make_tools(tools: Iterable[ParseableToolParam] | NotGiven) -> List[ToolPara
     converted_tools: List[ToolParam] = []
     for tool in tools:
         if tool["type"] != "function":
-            converted_tools.append(tool)
+            # Handle custom tools - convert from ChatCompletion format to Responses format
+            if "custom" in tool:
+                custom = tool["custom"]
+                converted_tools.append(
+                    cast(
+                        ToolParam,
+                        {
+                            "type": "custom",
+                            "name": custom["name"],
+                            "description": custom.get("description"),
+                            "format": custom.get("format"),
+                        },
+                    )
+                )
+            else:
+                # standard Responses API case
+                converted_tools.append(tool)
             continue
 
         if "function" not in tool:

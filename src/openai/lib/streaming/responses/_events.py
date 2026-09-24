@@ -56,6 +56,8 @@ from ....types.responses import (
     ResponseCodeInterpreterCallCompletedEvent,
     ResponseCodeInterpreterCallInProgressEvent,
     ResponseCodeInterpreterCallInterpretingEvent,
+    ResponseCustomToolCallInputDeltaEvent,
+    ResponseCustomToolCallInputDoneEvent,
 )
 from ....types.responses.response_reasoning_text_done_event import ResponseReasoningTextDoneEvent
 from ....types.responses.response_reasoning_text_delta_event import ResponseReasoningTextDeltaEvent
@@ -139,6 +141,8 @@ ResponseStreamEvent: TypeAlias = Annotated[
         ResponseQueuedEvent,
         ResponseReasoningTextDeltaEvent,
         ResponseReasoningTextDoneEvent,
+        ResponseCustomToolCallInputDeltaEvent,
+        ResponseCustomToolCallInputDoneEvent,
     ],
     PropertyInfo(discriminator="type"),
 ]
