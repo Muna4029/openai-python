@@ -2919,12 +2919,12 @@ def _make_tools(tools: Iterable[ParseableToolParam] | NotGiven) -> List[ToolPara
     converted_tools: List[ToolParam] = []
     for tool in tools:
         if tool["type"] != "function":
-            converted_tools.append(tool)
+            converted_tools.append(cast(ToolParam, tool))
             continue
 
         if "function" not in tool:
             # standard Responses API case
-            converted_tools.append(tool)
+            converted_tools.append(cast(ToolParam, tool))
             continue
 
         function = cast(Any, tool)["function"]  # pyright: ignore[reportUnnecessaryCast]
