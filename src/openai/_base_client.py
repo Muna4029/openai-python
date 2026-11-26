@@ -4,14 +4,10 @@ import sys
 import json
 import time
 import uuid
-import email
 import asyncio
 import inspect
 import logging
 import platform
-import email.utils
-from types import TracebackType
-from random import random
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -31,9 +27,7 @@ from typing import (
 )
 from typing_extensions import Literal, override, get_origin
 
-import anyio
 import httpx
-import distro
 import pydantic
 from httpx import URL
 from pydantic import PrivateAttr
@@ -192,7 +186,11 @@ class BasePage(GenericModel, Generic[_T]):
 
     def _params_from_url(self, url: URL) -> httpx.QueryParams:
         # TODO: do we have to preprocess params here?
-        return httpx.QueryParams(cast(Any, self._options.params)).merge(url.params)
+        # httpx.QueryParams does not provide a .merge method. Build a combined
+        # mapping from the existing options and the URL params instead.
+        existing = cast(Any, self._options.params)
+        combined = {**dict(httpx.QueryParams(existing)), **dict(url.params)}
+        return httpx.QueryParams(combined)
 
     def _info_to_options(self, info: PageInfo) -> FinalRequestOptions:
         options = model_copy(self._options)
@@ -1358,8 +1356,10 @@ class AsyncHttpxClientWrapper(DefaultAsyncHttpxClient):
         try:
             # TODO(someday): support non asyncio runtimes here
             asyncio.get_running_loop().create_task(self.aclose())
-        except Exception:
-            pass
+        except RuntimeError:
+            # No running loop in this context; can't schedule aclose(). Don't
+            # silently swallow all exceptions — only handle the expected case.
+            log.debug("No running event loop; AsyncHttpxClientWrapper.__del__ could not schedule aclose()")
 
 
 class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):

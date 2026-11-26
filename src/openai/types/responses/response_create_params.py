@@ -3,7 +3,25 @@
 from __future__ import annotations
 
 from typing import List, Union, Iterable, Optional
-from typing_extensions import Literal, Required, TypeAlias, TypedDict
+
+# typing_extensions exports vary across environments. Import robustly with fallbacks
+try:
+    from typing_extensions import Literal, Required, TypeAlias, TypedDict
+except Exception:
+    # Try to get what we can from the stdlib typing (newer Python versions)
+    try:
+        from typing import Literal, TypeAlias, TypedDict  # type: ignore
+    except Exception:
+        # Last-resort fallback: import minimal symbols from typing_extensions
+        from typing_extensions import Literal, TypedDict  # type: ignore
+        TypeAlias = str  # type: ignore
+
+    try:
+        from typing import Required  # type: ignore
+    except Exception:
+        # Provide a noop Required for older environments (used only in annotations)
+        def Required(x):  # type: ignore
+            return x
 
 from .tool_param import ToolParam
 from .response_includable import ResponseIncludable

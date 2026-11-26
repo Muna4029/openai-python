@@ -1123,7 +1123,7 @@ class Responses(SyncAPIResource):
             ),
             # we turn the `Response` instance into a `ParsedResponse`
             # in the `parser` function above
-            cast_to=cast(Type[ParsedResponse[TextFormatT]], Response),
+            cast_to=Response,
         )
 
     @overload
@@ -1357,7 +1357,7 @@ class Responses(SyncAPIResource):
             ),
             cast_to=Response,
             stream=stream or False,
-            stream_cls=Stream[ResponseStreamEvent],
+            stream_cls=Stream,
         )
 
     def delete(
@@ -2232,7 +2232,7 @@ class AsyncResponses(AsyncAPIResource):
             ),
             cast_to=Response,
             stream=stream or False,
-            stream_cls=AsyncStream[ResponseStreamEvent],
+            stream_cls=AsyncStream,
         )
 
     @overload
@@ -2344,7 +2344,7 @@ class AsyncResponses(AsyncAPIResource):
 
         tools = _make_tools(tools)
         if len(new_response_args_names) > 0:
-            if isinstance(input, NotGiven):
+            if not is_given(input):
                 raise ValueError("input must be provided when creating a new response")
 
             if not is_given(model):
@@ -2392,7 +2392,7 @@ class AsyncResponses(AsyncAPIResource):
                 starting_after=None,
             )
         else:
-            if isinstance(response_id, NotGiven):
+            if not is_given(response_id):
                 raise ValueError("response_id must be provided when streaming an existing response")
 
             api_request = self.retrieve(
